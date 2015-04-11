@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="../style/main.css" />
+
+		<title>Cart</title>
+	</head>
+
+	<body>
+		<div class="container">
+		<h1>User</h1>
+			<div class="formbox">
+				<div class="formelement">
+					<label>ID:</label><span id="userid">{{ user_id }}</span>
+				</div>
+				<div class="formelement">
+					<label>NickName:</label><span id="nickname">{{ user_nickname }}</span>
+				</div>
+				<div class="formelement">
+					<label>First Name:</label><input type="text" name="firstname" id="firstname">
+				</div>
+				<div class="formelement">
+					<label>Last Name:</label><input type="text" name="lastname" id="lastname">
+				</div>
+				<div class="formelement"
+					<input type="button" value="Update User Details" onclick="updateUserDetails();" />
+				</div>
+				<div class="formelement">
+					<a href="{{ logout_url }}">Logout</a>
+				</div>
+				<br />
+			</div>
+		</div>
+
+		<br />
+		<div class="container">
+		<h1>Product</h1>
+			<div class="formbox">
+				<div class="formelement">
+					<label>ID:</label><input type="text" name="book_id" id="book_id">
+				</div>
+				<div class="formelement">
+					<label>Name:</label><input type="text" name="title" id="title">
+				</div>
+				<div class="formelement">
+					<label>Manufacturer ID:</label><input type="text" name="author" id="author">
+				</div>
+				<div class="formelement">
+					<label>Price:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<label>Stock total:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<input type="button" value="Add/Update" onclick="AddBook();" />
+				</div>
+				<br />
+			</div>
+		</div>
+		<br />
+		<div id="supplier" class="container">
+		<h1>Supplier</h1>
+			<div class="formbox">
+				<div class="formelement">
+					<label>ID:</label><input type="text" name="book_id" id="book_id">
+				</div>
+				<div class="formelement">
+					<label>Name:</label><input type="text" name="title" id="title">
+				</div>
+				<div class="formelement">
+					<label>Email:</label><input type="text" name="author" id="author">
+				</div>
+				<div class="formelement">
+					<label>Phone:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<label>URL:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<input type="button" value="Add/Update" onclick="AddBook();" />
+				</div>
+				<br />
+			</div>
+		</div>
+		
+		<br />
+		<div class="container">
+		<h1>Item</h1>
+			<div class="formbox">
+				<div class="formelement">
+					<label>ID:</label><input type="text" name="book_id" id="book_id">
+				</div>
+				<div class="formelement">
+					<label>Product ID:</label><input type="text" name="title" id="title">
+				</div>
+				<div class="formelement">
+					<label>Quantity:</label><input type="text" name="author" id="author">
+				</div>
+				<div class="formelement">
+					<label>Price:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<input type="button" value="Add/Update" onclick="AddBook();" />
+				</div>
+				<br />
+			</div>
+		</div>
+		<br />
+		<div id="cart" class="container">
+		<h1>Cart</h1>
+			<div class="formbox">
+				<div class="formelement">
+					<label>ID:</label><input type="text" name="book_id" id="book_id">
+				</div>
+				<div class="formelement">
+					<label>Item ID:</label><input type="text" name="title" id="title">
+				</div>
+				<div class="formelement">
+					<label>User ID:</label><input type="text" name="author" id="author">
+				</div>
+				<div class="formelement">
+					<label>Total Price:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<input type="button" value="Add/Update" onclick="AddBook();" />
+				</div>
+				<br />
+			</div>
+		</div>
+		<br />
+		<div class="container">
+		<h1>Order</h1>
+			<div class="formbox">
+				<div class="formelement">
+					<label>ID:</label><input type="text" name="book_id" id="book_id">
+				</div>
+				<div class="formelement">
+					<label>User ID:</label><input type="text" name="author" id="author">
+				</div>
+				<div class="formelement">
+					<label>Item ID:</label><input type="text" name="title" id="title">
+				</div>
+				<div class="formelement">
+					<label>Cart ID:</label><input type="text" name="title" id="title">
+				</div>
+				<div class="formelement">
+					<label>Total Price:</label><input type="text" name="price" id="price">
+				</div>
+				<div class="formelement">
+					<input type="button" value="Add/Update" onclick="AddBook();" />
+				</div>
+				<br />
+			</div>
+		</div>
+		
+		<script src="scripts/user.js"></script>
+		<script src="scripts/books.js"></script>
+		<script src="scripts/main.js"></script>
+	</body>
+</html>
+{% endautoescape %}

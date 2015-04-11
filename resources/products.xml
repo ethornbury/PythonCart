@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<catalog>
+   <product id="p1">
+      <name>Product1</name>
+      <manufacturerId>m1</manufacturerId>
+      <price>4.00</price>
+      <stockTotal>1</stockTotal>
+   </product>
+   <product id="p2">
+      <name>Product2</name>
+      <manufacturerId>m2</manufacturerId>
+      <price>6.00</price>
+      <stockTotal>5</stockTotal>
+   </product>
+ <product id="p3">
+      <name>Product3</name>
+      <manufacturerId>m1</manufacturerId>
+      <price>5.00</price>
+      <stockTotal>10</stockTotal>
+   </product>
+   <product id="p4">
+      <name>Product4</name>
+      <manufacturerId>m2</manufacturerId>
+      <price>5.50</price>
+      <stockTotal>2</stockTotal>
+   </product>
+   
+  <product id="p5">
+      <name>Product5</name>
+      <manufacturerId>m3</manufacturerId>
+      <price>20.00</price>
+      <stockTotal>200</stockTotal>
+   </product>
+   <product id="p6">
+      <name>Product6</name>
+      <manufacturerId>m3</manufacturerId>
+      <price>1.00</price>
+      <stockTotal>100</stockTotal>
+   </product>
+   <product id="p7">
+      <name>Product7</name>
+      <manufacturerId>m1</manufacturerId>
+      <price>10.00</price>
+      <stockTotal>100</stockTotal>
+   </product>
+   <product id="p8">
+      <name>Product8</name>
+      <manufacturerId>m1</manufacturerId>
+      <price>5.00</price>
+      <stockTotal>10</stockTotal>
+   </product> 
+</catalog>

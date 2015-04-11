@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<catalog>
+   <supplier id="s1">
+      <name>Supplier1</name>
+      <email>supplier-1@et.ie</email>
+      <phonenumber>0871234567</phonenumber>
+      <url>1</url>
+   </supplier>
+    <supplier id="s2">
+      <name>Supplier2</name>
+      <email>supplier-2@et.ie</email>
+      <phonenumber>0861234567</phonenumber>
+      <url>1</url>
+   </supplier>
+   <supplier id="s3">
+      <name>Supplier3</name>
+      <email>supplier-3@et.ie</email>
+      <phonenumber>0831234567</phonenumber>
+      <url>1</url>
+   </supplier>
+     <supplier id="s4">
+      <name>Supplier4</name>
+      <email>supplier-4@et.ie</email>
+      <phonenumber>0851234567</phonenumber>
+      <url>1</url>
+   </supplier>
+     <supplier id="s5">
+      <name>Supplier5</name>
+      <email>supplier-5@et.ie</email>
+      <phonenumber>0841234567</phonenumber>
+      <url>1</url>
+   </supplier>
+ </catalog>

@@ -1,0 +1,68 @@
+body{
+font-family: 'Myriad Pro',Helvetica, sans-serif;
+padding-top: 20px;
+}
+.formbox{
+
+}
+
+.formelement{
+margin:5px;
+font-weight: bold;
+}
+
+.formelement span{
+font-weight: normal;
+}
+
+.formelement label{
+display: inline-block;
+width: 100px;
+margin: 5px;
+}
+.container{
+background-color: #cccfff;
+width: 400px;
+height: auto;
+padding: 5px;
+border: 1px solid #ccc;
+margin: 0 auto;
+/* border radius cross browser*/
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+/*
+.leftAlign{
+float: left;
+}
+
+.rightAlign{
+float: right;
+}
+*/
+input{
+margin: 5px;
+width: 50%;
+border: 1px solid #622025;
+height: 30px;
+/* border radius cross browser*/
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
+a{
+background-color: #fff;
+padding: 10px;
+width: 50%;
+border: 1px solid #622025;
+height: 30px;
+/* border radius cross browser*/
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.newLine{
+clear: both;
+}
