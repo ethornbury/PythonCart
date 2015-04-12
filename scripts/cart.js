@@ -1,25 +1,26 @@
 /*
-Add a book to our book list
+Add a cart to our cart list
 */
-function AddBook(){
+function AddCart(){
 
 	/*Get the first name and last name*/
-	var bookId	= document.getElementById("book_id").value.trim();
-	var title 	= document.getElementById("title").value.trim();
-	var author 	= document.getElementById("author").value.trim();
-	var price 	= document.getElementById("price").value.trim();
+	var cartId	= document.getElementById("cart_id").value.trim();
+	var itemId 	= document.getElementById("itemId").value.trim();
+	var userId 	= document.getElementById("userId").value.trim();
+	var totalPrice 	= document.getElementById("totalPrice").value.trim();
+	
 
 	/*Check that values have been entered*/
-	if(!bookId || !title || !author || !price){
+	if(!cartId || !itemId ||  !userId || !totalPrice){
 		alert("All fields are required");
 	}
-	else if(!parseFloat(price)){
+	else if(!parseFloat(totalPrice)){
 		alert("Price must be a floating point number");
 	}
 	else{
 
 		//Round the price to two decimal places and convert to string
-		price = parseFloat(price).toFixed(2).toString();
+		totalPrice = parseFloat(totalPrice).toFixed(2).toString();
 
 		var xmlhttp;
 		if (window.XMLHttpRequest)
@@ -48,33 +49,33 @@ function AddBook(){
 					alert('Server returned HTTP status '+xmlhttp.status);
 				}
 
-				//refresh the book list
-				listBooks();
+				//refresh the cart list
+				listCarts();
 			}
 		}
 
 		//build a json object
-		var bookObject ={};
-		bookObject.id = bookId;
-		bookObject.author = author;
-		bookObject.title = title;
-		bookObject.price = price;
+		var cartObject ={};
+		cartObject.id = cartId;
+		cartObject.itemId = itemId;
+		cartObject.userId = userId;
+		cartObject.totalPrice = totalPrice;
 
 		//Convert JSON object to JSON string
-		bookString = JSON.stringify(bookObject);
+		cartString = JSON.stringify(cartObject);
 
-		//We secify the book ID so we use PUT instead of POST
-		xmlhttp.open("PUT","/books",true);
+		//We secify the cart ID so we use PUT instead of POST
+		xmlhttp.open("PUT","/carts",true);
 		xmlhttp.setRequestHeader("Content-type","text/x-json");
-		xmlhttp.send(bookString);
+		xmlhttp.send(cartString);
 	}
 
 }
 
 /*
-Make an AJAX claa to retrive a list of books
+Make an AJAX claa to retrive a list of carts
 */
-function listBooks(){
+function listCarts(){
 	var xmlhttp;
 
 	if (window.XMLHttpRequest)
@@ -96,24 +97,26 @@ function listBooks(){
 				//Convert the response into a json object
 				var response = JSON.parse(xmlhttp.responseText);
 				
-				result="<table border='1'><tr><th>ID</th><th>Title</th><th>Author</th><th>Price</th></tr>"
+				result="<table border='1'><tr><th>ID</th><th>Item Id</th><th>User Id</th><th>Total Price</th></tr>"
 
 
-				for(var i=0;i<response.books.length;i++){
+				for(var i=0;i<response.carts.length;i++){
 					
-					result+="<tr><td>"+response.books[i].id+"</td><td>"+response.books[i].title+"</td><td>"+response.books[i].author+"</td><td>"+response.books[i].price+"</td></tr>";
+					result+="<tr><td>"+response.carts[i].id
+					+"</td><td>"+response.carts[i].itemId+"</td><td>"
+					+response.carts[i].userId+"</td></tr>"
+					+response.carts[i].totalPrice+"</td></tr>";
 					
-
 				}
 
 				result+="</table>"
 
-				document.getElementById("books").innerHTML = result;
+				document.getElementById("carts").innerHTML = result;
 			}
 		}
 	}
 
-	xmlhttp.open("GET","/books",true);
+	xmlhttp.open("GET","/carts",true);
 	xmlhttp.send();
 
 }

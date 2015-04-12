@@ -23,7 +23,7 @@ ORDERSTORE_NAME = 'default_orderstore'
 
 #jinja 
 JINJA_ENVIRONMENT = jinja2.Environment(
-	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates/')),
+	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'staticpage/')),
 	extensions=['jinja2.ext.autoescape'],
 	autoescape=True)
 
@@ -100,9 +100,9 @@ def init_products():
 			
 			newproduct.id = product.getAttribute("id");
 			
-			name = product.getElementsByTagName('name')[0]
 			newproduct.name = name.childNodes[0].data;
-			
+			name = product.getElementsByTagName('name')[0]			
+
 			manufacturerId = product.getElementsByTagName('manufacturerId')[0]
 			newproduct.manufacturerId = manufacturerId.childNodes[0].data;
 									
@@ -110,7 +110,7 @@ def init_products():
 			newproduct.price = float(price.childNodes[0].data);
 						
 			stockTotal = product.getElementsByTagName('stockTotal')[0]
-			newbook.author = author.childNodes[0].data;
+			newbook.stockTotal = stockTotal.childNodes[0].data;
 								
 			newproduct.put();
 
@@ -142,10 +142,10 @@ def init_suppliers():
 			newsupplier.email = email.childNodes[0].data;
 									
 			phonenumber = supplier.getElementsByTagName('phonenumber')[0]	
-			newsupplier.phonenumber = integer(phonenumber.childNodes[0].data);
+			newsupplier.phonenumber = phonenumber.childNodes[0].data;
 						
 			url = supplier.getElementsByTagName('url')[0]
-			newsupplier.email = email.childNodes[0].data;
+			newsupplier.url = url.childNodes[0].data);
 								
 			newsupplier.put();
 
@@ -170,11 +170,11 @@ def init_items():
 			
 			newitem.id = item.getAttribute("id");
 			
-			productId = item.getElementsByTagName('manufacturerId')[0]
+			productId = item.getElementsByTagName('productId')[0]
 			newitem.productId = productId.childNodes[0].data;
 									
-			quantity = item.getElementsByTagName('price')[0]	
-			newitem.quantity = integer(quantity.childNodes[0].data);
+			quantity = item.getElementsByTagName('quantity')[0]	
+			newitem.quantity = quantity.childNodes[0].data);
 							
 			newitem.put();
 
@@ -253,8 +253,8 @@ class UserServiceHandler(webapp2.RequestHandler):
 				user.id = userjson["id"];
 				user.firstname = userjson["firstName"];
 				user.lastname = userjson["lastName"];
-				user.email = userjson["email"];
-				user.address = userjson["address"];
+				#user.email = userjson["email"];
+				#user.address = userjson["address"];
 
 				#Store the user info
 				user.put();
@@ -292,8 +292,8 @@ class UserServiceHandler(webapp2.RequestHandler):
 				user = query_results[0];
 				user.firstname = userjson["firstName"];
 				user.lastname = userjson["lastName"];
-				user.email = userjson["email"];
-				user.address = userjson["address"];
+				#user.email = userjson["email"];
+				#user.address = userjson["address"];
 
 				#Store the user info
 				user.put();
@@ -305,109 +305,137 @@ class UserServiceHandler(webapp2.RequestHandler):
 				self.response.headers['Content-Type'] = 'text/x-json'
 				self.response.write(json_response)
 				
-
+				
 class SupplierServiceHandler(webapp2.RequestHandler):
 	# supplier service handler
 
-	def get(self,supplier_id):
+	def get(self):
 		#Process a HTTP Get Request for the service 
 		
 		#Read the data
-		suppliers_query = Supplier.query(Supplier.id==supplier_id)
-		suppliers = suppliers_query.fetch(1)
+		suppliers_query = Supplier.query()
+		suppliers = suppliers_query.fetch()
+		
+		result = [];
+				
+		for p in suppliers:
+			#store each supplier in a dictionary
+			supplier = {}
+			supplier['id'] = p.id
+			supplier['firstname'] = p.name
+			supplier['lastname'] = p.email
+			supplier['email'] = p.email
+			supplier['phonenumber'] = p.phonenumber
+			supplier['url'] = p.url
 			
-		# return a 404 error
-		if len(suppliers) < 1:
-			self.error(404)
-		else:	
-			#Create a dictionary to store the data
-			r={};
-			r['id'] = suppliers[0].id;
-			r['name'] = suppliers[0].name;
-			r['email'] = suppliers[0].email;
-			r['phonenumber'] = suppliers[0].phonenumber;			
-			r['url'] = suppliers[0].url;
+			#add the dictionary to the list
+			result.append(supplier);
+			
+		#Create a new dictionary for the results
+		r={};
 
-			self.response.headers['Content-Type'] = 'text/x-json'
-			self.response.write(json.dumps(r, separators=(',',':')))
+		#Give the results dictionary a key called suppliers whos value is the list of suppliers returned
+		r['suppliers'] = result;
+	
+		self.response.headers['Content-Type'] = 'text/x-json'
+		self.response.write(json.dumps(r, separators=(',',':')))
 
 	
 	def put(self):
 		#Process a HTTP PUT Request service 
 		
-		#Parse the json	
-		supplierjson = json.loads(self.request.body)
-
-		# Check
-		current_supplier = suppliers.get_current_supplier()
-
-		if (not current_supplier) or not (current_supplier.supplier_id() == supplierjson["id"]) :
-			self.error(500)	
+		#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
 		else:
 
+			#Parse the json we received		
+			supplierjson = json.loads(self.request.body)
+		
+			#check if we already have an entry for that supplier
 			suppliers_query = Supplier.query(Supplier.id==supplierjson["id"])
 			query_results = suppliers_query.fetch()
 
 			if len(query_results) == 0:
-				self.error(404); #not found
-			else:
-				#Update 
-				supplier = Supplier(parent=data_store_key(SUPPLIERSTORE_NAME))
+				#We must be adding a new supplier as the query returned zero results
+				#Create a new instance of Supplier
+				supplier = Supplier(parent=data_store_key(PUBSTORE_NAME))
 				supplier.id = supplierjson["id"];
 				supplier.name = supplierjson["name"];
-				user.email = userjson["email"];
+				supplier.email = supplierjson["email"];
 				supplier.phonenumber = supplierjson["phonenumber"];
 				supplier.url = supplierjson["url"];
-
-				#Store the info
+			
+				#Store the supplier info
 				supplier.put();
-				
-				#return a message 
+
+				#return a message to the client
+				data = {}
+				data['message'] = 'Added Supplier (PUT):'+supplierjson["id"]
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+
+			else:
+				#Update the supplier object
+				supplier = query_results[0];
+				supplier.name = supplierjson["name"];
+
+				#Store the supplier info
+				supplier.put();
+		
+				#return a message to the client
 				data = {}
 				data['message'] = 'Updated Supplier (PUT):'+supplierjson["id"]
 				json_response = json.dumps(data)
 				self.response.headers['Content-Type'] = 'text/x-json'
 				self.response.write(json_response)
 
-	def delete(self):
-		#Process a HTTP PUT Request for the service
+	def delete(self,supplier_id):
+		"""Process a HTTP DELETE Request for orders by deleting a order with the specified id"""
+		logging.info("Supplier delete called:"+supplier_id)
+
+		#Check that there are no suppliers using this publisher
+		suppliers_query = Supplier.query(Supplier.publisher==publisher_id)
+		query_results = suppliers_query.fetch()
+
+		if not len(query_results) == 0:
+			#We won't allow this publisher to be deleted because there is a supplier entry uning it
+			self.error(405) #method not allowed
+		else:
+			#Checks if the user is logged in
+			current_user = users.get_current_user()
+
+		#Checks if the user is logged in
+		current_user = users.get_current_user()
 		
-		#Parse the json 	
-		supplierjson = json.loads(self.request.body)
-
-		# Checks 
-		current_supplier = suppliers.get_current_supplier()
-
-		if (not current_supplier) or not (current_supplier.supplier_id() == supplierjson["id"]) :
-			self.error(500)	
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
 		else:
 
-			suppliers_query = Supplier.query(Supplier.id==supplierjson["id"])
+			#check if we already have an entry for that order
+			suppliers_query = Supplier.query(Supplier.id==supplier_id)
 			query_results = suppliers_query.fetch()
 
 			if len(query_results) == 0:
-				self.error(404); #not found
+				#Resource not found
+				self.error(404)
 			else:
-				#Delete object to add to the app engine store
-				supplier = Supplier(parent=data_store_key(SUPPLIERSTORE_NAME))
-				supplier.id = supplierjson["id"];
-				supplier.name = supplierjson["name"];
-				user.email = userjson["email"];
-				supplier.phonenumber = supplierjson["phonenumber"];
-				supplier.url = supplierjson["url"];
-				
-				#use info
+				#Get the key of the object and deltet it from the key-value data store
 				supplier = query_results[0]
 				key = supplier.key
-				key.delete()				
-				
-				#return a message 
+				key.delete()
+				#return a message to the client
 				data = {}
-				data['message'] = 'Deleted book(PUT):'+bookjson["id"]
+				data['message'] = 'Deleted Supplier:'+supplier_id
 				json_response = json.dumps(data)
 				self.response.headers['Content-Type'] = 'text/x-json'
-				self.response.write(json_response)				
-				
+				self.response.write(json_response)
+								
 				
 class OrderServiceHandler(webapp2.RequestHandler):
 	# service handler
@@ -426,10 +454,10 @@ class OrderServiceHandler(webapp2.RequestHandler):
 			#store each order in a dictionary
 			order = {}
 			order['id'] = b.id
-			order['publisher'] = b.publisher
-			order['author'] = b.author			
-			order['title'] = b.title
-			order['price'] = str(b.price)
+			order['itemId'] = b.itemId
+			order['userId'] = b.userId			
+			order['cartId'] = b.cartId
+			order['totalPrice'] = str(b.totalPrice)
 
 			#add the dictionary to the list
 			result.append(order);
@@ -491,10 +519,10 @@ class OrderServiceHandler(webapp2.RequestHandler):
 			orderjson = json.loads(self.request.body)
 
 			#Check if the publisher for the order information exists
-			publisher_query = Publisher.query(Publisher.id == orderjson["publisher"])
-			publisher_query_results = publisher_query.fetch()
+			order_query = Order.query(Order.id == orderjson["order"])
+			order_query_results = order_query.fetch()
 		
-			if len(publisher_query_results)==0:
+			if len(order_query_results)==0:
 				#There is no publisher in our database with the specified id
 				self.error(404); #not found
 			else:		
@@ -508,10 +536,10 @@ class OrderServiceHandler(webapp2.RequestHandler):
 					#Create a new instance of Order
 					order = Order(parent=data_store_key(BOOKSTORE_NAME))
 					order.id = orderjson["id"];
-					order.title = orderjson["title"];
-					order.author = orderjson["author"];
-					order.publisher = orderjson["publisher"];
-					order.price = float(orderjson["price"]);
+					order.itemId = orderjson["itemId"];
+					order.userId = orderjson["userId"];
+					order.cartId = orderjson["cartId"];
+					order.totalPrice = float(orderjson["totalPrice"]);
 			
 					#Store the user info
 					order.put();
@@ -526,10 +554,10 @@ class OrderServiceHandler(webapp2.RequestHandler):
 				else:
 					#Update the order object
 					order = query_results[0];
-					order.title = orderjson["title"];
-					order.author = orderjson["author"];
-					order.publisher = orderjson["publisher"];
-					order.price = float(orderjson["price"]);
+					order.itemId = orderjson["itemId"];
+					order.userId = orderjson["userId"];
+					order.cartId = orderjson["cartId"];
+					order.totalPrice = float(orderjson["totalPrice"]);
 
 					#Store the user info
 					order.put();
@@ -541,13 +569,268 @@ class OrderServiceHandler(webapp2.RequestHandler):
 					self.response.headers['Content-Type'] = 'text/x-json'
 					self.response.write(json_response)
 
+					
+class ProductServiceHandler(webapp2.RequestHandler):
+	# product service handler
 
+	def get(self):
+		#Process a HTTP Get Request for the service 
+		
+		#Read the data
+		products_query = Product.query()
+		products = products_query.fetch()
+		
+		result = [];
+				
+		for p in products:
+			#store each product in a dictionary
+			product = {}
+			product['id'] = p.id
+			product['name'] = p.name
+			product['manufacturerId'] = p.manufacturerId
+			product['price'] = p.price
+			product['stockTotal'] = p.stockTotal
+			
+			#add the dictionary to the list
+			result.append(product);
+			
+		#Create a new dictionary for the results
+		r={};
+
+		#Give the results dictionary a key called products whos value is the list of products returned
+		r['products'] = result;
+	
+		self.response.headers['Content-Type'] = 'text/x-json'
+		self.response.write(json.dumps(r, separators=(',',':')))
+
+	
+	def put(self):
+		#Process a HTTP PUT Request service 
+		
+	#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
+		else:
+
+			#Parse the json we received		
+			productjson = json.loads(self.request.body)
+		
+			#check if we already have an entry for that product
+			products_query = Product.query(Product.id==productjson["id"])
+			query_results = products_query.fetch()
+
+			if len(query_results) == 0:
+				#We must be adding a new product as the query returned zero results
+				#Create a new instance of Product
+				product = Product(parent=data_store_key(PUBSTORE_NAME))
+				product.id = productjson["id"];
+				product.name = productjson["name"];
+				product.manufacturerId = productjson["manufacturerId"];
+				product.price = productjson["price"];
+				product.stockTotal = productjson["stockTotal"];
+			
+				#Store the product info
+				product.put();
+
+				#return a message to the client
+				data = {}
+				data['message'] = 'Added Product (PUT):'+productjson["id"]
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+
+			else:
+				#Update the product object
+				product = query_results[0];
+				product.name = productjson["name"];
+
+				#Store the product info
+				product.put();
+		
+				#return a message to the client
+				data = {}
+				data['message'] = 'Updated Product (PUT):'+productjson["id"]
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+
+	def delete(self,product_id):
+		"""Process a HTTP DELETE Request for orders by deleting a order with the specified id"""
+		logging.info("Product delete called:"+product_id)
+
+		#Check that there are no products using this publisher
+		products_query = Product.query(Product.publisher==publisher_id)
+		query_results = products_query.fetch()
+
+		if not len(query_results) == 0:
+			#We won't allow this publisher to be deleted because there is a product entry uning it
+			self.error(405) #method not allowed
+		else:
+			#Checks if the user is logged in
+			current_user = users.get_current_user()
+
+		#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
+		else:
+
+			#check if we already have an entry for that order
+			products_query = Product.query(Product.id==product_id)
+			query_results = products_query.fetch()
+
+			if len(query_results) == 0:
+				#Resource not found
+				self.error(404)
+			else:
+				#Get the key of the object and deltet it from the key-value data store
+				product = query_results[0]
+				key = product.key
+				key.delete()
+				#return a message to the client
+				data = {}
+				data['message'] = 'Deleted Product:'+product_id
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
 				
 
+class ItemServiceHandler(webapp2.RequestHandler):
+	# item service handler
+
+	def get(self):
+		#Process a HTTP Get Request for the service 
+		
+		#Read the data
+		items_query = Item.query()
+		items = items_query.fetch()
+		
+		result = [];
+				
+		for p in items:
+			#store each item in a dictionary
+			item = {}
+			item['id'] = p.id
+			item['productId'] = p.productId
+			item['quantity'] = p.quantity
+			
+			#add the dictionary to the list
+			result.append(item);
+			
+		#Create a new dictionary for the results
+		r={};
+
+		#Give the results dictionary a key called items whos value is the list of items returned
+		r['items'] = result;
+	
+		self.response.headers['Content-Type'] = 'text/x-json'
+		self.response.write(json.dumps(r, separators=(',',':')))
+
+	
+	def put(self):
+		#Process a HTTP PUT Request service 
+		
+	#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
+		else:
+
+			#Parse the json we received		
+			itemjson = json.loads(self.request.body)
+		
+			#check if we already have an entry for that item
+			items_query = Item.query(Item.id==itemjson["id"])
+			query_results = items_query.fetch()
+
+			if len(query_results) == 0:
+				#We must be adding a new item as the query returned zero results
+				#Create a new instance of Item
+				item = Item(parent=data_store_key(PUBSTORE_NAME))
+				item.id = itemjson["id"];
+				item.productId = itemjson["productId"];
+				item.quantity = itemjson["quantity"];				
+			
+				#Store the item info
+				item.put();
+
+				#return a message to the client
+				data = {}
+				data['message'] = 'Added Item (PUT):'+itemjson["id"]
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+
+			else:
+				#Update the item object
+				item = query_results[0];
+				item.name = itemjson["name"];
+
+				#Store the item info
+				item.put();
+		
+				#return a message to the client
+				data = {}
+				data['message'] = 'Updated Item (PUT):'+itemjson["id"]
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+
+	def delete(self,item_id):
+		"""Process a HTTP DELETE Request for orders by deleting a order with the specified id"""
+		logging.info("Item delete called:"+item_id)
+
+		#Check that there are no items using this publisher
+		items_query = Item.query(Item.publisher==publisher_id)
+		query_results = items_query.fetch()
+
+		if not len(query_results) == 0:
+			#We won't allow this publisher to be deleted because there is a item entry uning it
+			self.error(405) #method not allowed
+		else:
+			#Checks if the user is logged in
+			current_user = users.get_current_user()
+
+		#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
+		else:
+
+			#check if we already have an entry for that order
+			items_query = Item.query(Item.id==item_id)
+			query_results = items_query.fetch()
+
+			if len(query_results) == 0:
+				#Resource not found
+				self.error(404)
+			else:
+				#Get the key of the object and deltet it from the key-value data store
+				item = query_results[0]
+				key = item.key
+				key.delete()
+				#return a message to the client
+				data = {}
+				data['message'] = 'Deleted Item:'+item_id
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+				
+				
+				
 logging.info("STARTING UP")
 #The first time our application runs we want to load book info
-#init_suppliers();
-#init_products();
+init_suppliers();
+init_products();
 
 application = webapp2.WSGIApplication([
 	('/users', UserServiceHandler),
@@ -555,17 +838,10 @@ application = webapp2.WSGIApplication([
 	('/supplier', SupplierServiceHandler),
 	('/supplier/(\d+)', SupplierServiceHandler),
 	('/order', OrderServiceHandler),
-	('/order/(\d+)', OrderServiceHandler),	 	
+	('/order/(\d+)', OrderServiceHandler),	
+	('/product', ProductServiceHandler),
+	('/product/(\d+)', ProductServiceHandler),	 
 #	('/cartservice/control/.*',  item.ItemServiceHandler),	
 #	('/cartservice/control/.*',   'control,cart.SupplierServiceHandler')
 	], debug=True)
-
-#('/cartservice/control/.*',     'control,docs.DefaultHandler')
-
-#application = webapp2.WSGIApplication([('/', MainPage),
-#			('/users', UserServiceHandler),
-#			('/users/(\d+)', UserServiceHandler),
-#			
-#			('/books', BookServiceHandler),], debug=True)
-
 

@@ -11,7 +11,7 @@ function AddProduct(){
 	var stockTotal 	= document.getElementById("stockTotal").value.trim();
 
 	/*Check that values have been entered*/
-	if(!productId || !title || !author || !price){
+	if(!productId || !name ||  !manufacturerId || !price || !stockTotal){
 		alert("All fields are required");
 	}
 	else if(!parseFloat(price)){
@@ -50,7 +50,7 @@ function AddProduct(){
 				}
 
 				//refresh the product list
-				listBooks();
+				listProducts();
 			}
 		}
 
@@ -76,7 +76,7 @@ function AddProduct(){
 /*
 Make an AJAX claa to retrive a list of products
 */
-function listBooks(){
+function listProducts(){
 	var xmlhttp;
 
 	if (window.XMLHttpRequest)
@@ -105,7 +105,6 @@ function listBooks(){
 					
 					result+="<tr><td>"+response.products[i].id
 					+"</td><td>"+response.products[i].name+"</td><td>"
-					+response.products[i].author+"</td><td>"
 					+response.products[i].manufacturerId+"</td></tr>"
 					+response.products[i].price+"</td></tr>"
 					+response.products[i].stockTotal+"</td></tr>";
