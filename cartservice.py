@@ -8,11 +8,6 @@ from google.appengine.api import users
 from xml.dom.minidom import parse
 import xml.dom.minidom
 
-#import cart
-#import item
-#import product
-#import supplier
-
 
 USERSTORE_NAME = 'default_userstore'
 SUPPLIERSTORE_NAME = 'default_supplierstore'
@@ -46,7 +41,7 @@ class Product(ndb.Model):
 	#Represents a product
 	id = ndb.StringProperty(indexed=True)
 	name = ndb.StringProperty(indexed=False)
-	manufacturerId = ndb.StringProperty(indexed=False)
+	supplier = ndb.StucturedProperty(Supplier)
 	price = ndb.FloatProperty(indexed=False)
 	stockTotal = ndb.IntegerProperty(indexed=False)
 	
@@ -61,22 +56,22 @@ class Supplier(ndb.Model):
 class Item(ndb.Model):
 	#Represents an item
 	id = ndb.StringProperty(indexed=True)
-	productId = ndb.StructuredProperty(Product)
+	product = ndb.StructuredProperty(Product)
 	quantity = ndb.IntegerProperty(indexed=False)
 	
 class Cart(ndb.Model):
 	#represents a cart
 	id = ndb.StringProperty(indexed=True)
-	itemId = ndb.StructuredProperty(Item)
-	userId = ndb.StructuredProperty(User)
+	item = ndb.StructuredProperty(Item)
+	user = ndb.StructuredProperty(User)
 	totalPrice = ndb.FloatProperty(indexed=False)
 	
 class Order(ndb.Model):
 	#represents an order
 	id = ndb.StringProperty(indexed=True)
-	itemId = ndb.StructuredProperty(Item)
-	userId = ndb.StructuredProperty(User)
-	cartId = ndb.StructuredProperty(Cart)
+	item = ndb.StructuredProperty(Item)
+	user = ndb.StructuredProperty(User)
+	cart =ndb.StructuredProperty(Cart)
 	totalPrice = ndb.FloatProperty(indexed=False)
 
 def init_products():
@@ -454,9 +449,9 @@ class OrderServiceHandler(webapp2.RequestHandler):
 			#store each order in a dictionary
 			order = {}
 			order['id'] = b.id
-			order['itemId'] = b.itemId
-			order['userId'] = b.userId			
-			order['cartId'] = b.cartId
+			order['item'] = b.item
+			order['user'] = b.user			
+			order['cart'] = b.cart
 			order['totalPrice'] = str(b.totalPrice)
 
 			#add the dictionary to the list
@@ -536,9 +531,9 @@ class OrderServiceHandler(webapp2.RequestHandler):
 					#Create a new instance of Order
 					order = Order(parent=data_store_key(BOOKSTORE_NAME))
 					order.id = orderjson["id"];
-					order.itemId = orderjson["itemId"];
-					order.userId = orderjson["userId"];
-					order.cartId = orderjson["cartId"];
+					order.item = orderjson["item"];
+					order.user = orderjson["user"];
+					order.cart = orderjson["cart"];
 					order.totalPrice = float(orderjson["totalPrice"]);
 			
 					#Store the user info
@@ -554,9 +549,9 @@ class OrderServiceHandler(webapp2.RequestHandler):
 				else:
 					#Update the order object
 					order = query_results[0];
-					order.itemId = orderjson["itemId"];
-					order.userId = orderjson["userId"];
-					order.cartId = orderjson["cartId"];
+					order.item = orderjson["item"];
+					order.user = orderjson["user"];
+					order.cart = orderjson["cart"];
 					order.totalPrice = float(orderjson["totalPrice"]);
 
 					#Store the user info
@@ -587,7 +582,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 			product = {}
 			product['id'] = p.id
 			product['name'] = p.name
-			product['manufacturerId'] = p.manufacturerId
+			product['manufacturer'] = p.manufacturer
 			product['price'] = p.price
 			product['stockTotal'] = p.stockTotal
 			
@@ -628,7 +623,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 				product = Product(parent=data_store_key(PUBSTORE_NAME))
 				product.id = productjson["id"];
 				product.name = productjson["name"];
-				product.manufacturerId = productjson["manufacturerId"];
+				product.manufacturer = productjson["manufacturer"];
 				product.price = productjson["price"];
 				product.stockTotal = productjson["stockTotal"];
 			
@@ -716,7 +711,7 @@ class ItemServiceHandler(webapp2.RequestHandler):
 			#store each item in a dictionary
 			item = {}
 			item['id'] = p.id
-			item['productId'] = p.productId
+			item['product'] = p.product
 			item['quantity'] = p.quantity
 			
 			#add the dictionary to the list
@@ -755,7 +750,7 @@ class ItemServiceHandler(webapp2.RequestHandler):
 				#Create a new instance of Item
 				item = Item(parent=data_store_key(PUBSTORE_NAME))
 				item.id = itemjson["id"];
-				item.productId = itemjson["productId"];
+				item.product = itemjson["product"];
 				item.quantity = itemjson["quantity"];				
 			
 				#Store the item info
@@ -825,12 +820,151 @@ class ItemServiceHandler(webapp2.RequestHandler):
 				self.response.headers['Content-Type'] = 'text/x-json'
 				self.response.write(json_response)
 				
-				
+
+class CartServiceHandler(webapp2.RequestHandler):
+	# service handler
+
+	def get(self):
+		"""Process a HTTP Get Request for the order service by returnng all orders"""
+		logging.info("cart GET called")
+
+		#Read the order data from the data store
+		carts_query = Cart.query()
+		carts = carts_query.fetch()
+		
+		result = [];
+
+		for b in carts:
+			#store each order in a dictionary
+			cart = {}
+			cart['id'] = b.id
+			cart['item'] = b.item
+			cart['user'] = b.user		
+			cart['totalPrice'] = str(b.totalPrice)
+
+			#add the dictionary to the list
+			result.append(cart);
+			
+		#Create a new dictionary for the results
+		r={};
+
+		#Give the results dictionary a key called orders whos value is the list of orders returned
+		r['carts'] = result;
+	
+		self.response.headers['Content-Type'] = 'text/x-json'
+		self.response.write(json.dumps(r, separators=(',',':')))
+
+	def delete(self,cart_id):
+		"""Process a HTTP DELETE Request for orders by deleting a order with the specified id"""
+		logging.info("Order delete called:"+order_id)
+
+
+		#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
+		else:
+
+			#check if we already have an entry for that order
+			carts_query = Cart.query(Cart.id==cart_id)
+			query_results = carts_query.fetch()
+
+			if len(query_results) == 0:
+				#Resource not found
+				self.error(404)
+			else:
+				#Get the key of the object and deltet it from the key-value data store
+				cart = query_results[0]
+				key = cart.key
+				key.delete()
+				#return a message to the client
+				data = {}
+				data['message'] = 'Deleted cart:'+cart_id
+				json_response = json.dumps(data)
+				self.response.headers['Content-Type'] = 'text/x-json'
+				self.response.write(json_response)
+
+		
+	def put(self):
+		"""Process a HTTP PUT Request for the orders service by adding or updating a orders information"""
+
+		#Checks if the user is logged in
+		current_user = users.get_current_user()
+		
+		if not current_user :
+			#The request could not be completed because the user is not logged in
+			self.error(403) #access denied	
+		else:
+		
+			#Parse the json we received		
+			cartjson = json.loads(self.request.body)
+
+			#Check if the publisher for the order information exists
+			cart_query = Cart.query(Cart.id == cartjson["cart"])
+			cart_query_results = cart_query.fetch()
+			
+			#Read the user data from the data store
+			users_query = User.query(User.id==user_id)
+			users = users_query.fetch(1)
+			
+			#check if we already have an entry for that item
+			items_query = Item.query(Item.id==itemjson["id"])
+			query_results = items_query.fetch()
+		
+			if len(cart_query_results)==0:
+				#There is no publisher in our database with the specified id
+				self.error(404); #not found
+			else:		
+
+				#check if we already have an entry for that order
+				carts_query = Cart.query(Cart.id==cartjson["id"])
+				query_results = carts_query.fetch()
+
+				if len(query_results) == 0:
+					#We must be adding a new order as the query returned zero results
+					#Create a new instance of Order
+					cart = Cart(parent=data_store_key(BOOKSTORE_NAME))
+					cart.id = cartjson["id"];
+					cart.item = cartjson["item"];
+					cart.user = cartjson["user"];
+					cart.totalPrice = float(cartjson["totalPrice"]);
+			
+					#Store the user info
+					cart.put();
+
+					#return a message to the client
+					data = {}
+					data['message'] = 'Added cart (PUT):'+cartjson["id"]
+					json_response = json.dumps(data)
+					self.response.headers['Content-Type'] = 'text/x-json'
+					self.response.write(json_response)
+
+				else:
+					#Update the cart object
+					cart = query_results[0];
+					cart.item = cartjson["item"];
+					cart.user = cartjson["user"];
+					cart.totalPrice = float(cartjson["totalPrice"]);
+
+					#Store the user info
+					cart.put();
+			
+					#return a message to the client
+					data = {}
+					data['message'] = 'Updated cart (PUT):'+cartjson["id"]
+					json_response = json.dumps(data)
+					self.response.headers['Content-Type'] = 'text/x-json'
+					self.response.write(json_response)
+
+								
 				
 logging.info("STARTING UP")
 #The first time our application runs we want to load book info
 init_suppliers();
 init_products();
+init_items();
 
 application = webapp2.WSGIApplication([
 	('/users', UserServiceHandler),
@@ -840,8 +974,10 @@ application = webapp2.WSGIApplication([
 	('/order', OrderServiceHandler),
 	('/order/(\d+)', OrderServiceHandler),	
 	('/product', ProductServiceHandler),
-	('/product/(\d+)', ProductServiceHandler),	 
-#	('/cartservice/control/.*',  item.ItemServiceHandler),	
-#	('/cartservice/control/.*',   'control,cart.SupplierServiceHandler')
+	('/product/(\d+)', ProductServiceHandler),
+	('/item', ProductServiceHandler),
+	('/item/(\d+)', ProductServiceHandler),
+	('/cart', ProductServiceHandler),
+	('/cart/(\d+)', ProductServiceHandler),
 	], debug=True)
 
