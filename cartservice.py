@@ -16,19 +16,21 @@ CARTSTORE_NAME = 'default_cartstore'
 ITEMSTORE_NAME = 'default_itemstore'
 ORDERSTORE_NAME = 'default_orderstore'
 
+
 #jinja 
 JINJA_ENVIRONMENT = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'staticpage/')),
 	extensions=['jinja2.ext.autoescape'],
 	autoescape=True)
 
+	
 def data_store_key( datastore_name):
     """Constructs a datastore key for a datastore entity."""
 
 	#Note that all my data stores are going to be under the parent EmerDatastore
     return ndb.Key('EmerDatastore', datastore_name)
 
-
+	
 class User(ndb.Model):
 #represents a User entry.
 	id = ndb.StringProperty(indexed=True)
@@ -46,6 +48,7 @@ class Supplier(ndb.Model):
 	phonenumber = ndb.IntegerProperty(indexed=False)
 	url = ndb.StringProperty(indexed=False)
 
+	
 class Product(ndb.Model):
 	#Represents a product
 	id = ndb.StringProperty(indexed=True)
@@ -53,13 +56,14 @@ class Product(ndb.Model):
 	nameProduct = ndb.StringProperty(indexed=False)
 	price = ndb.FloatProperty(indexed=False)
 	stockTotal = ndb.IntegerProperty(indexed=False)
-	
 
+	
 class Item(ndb.Model):
 	#Represents an item
 	id = ndb.StringProperty(indexed=True)
 	product = ndb.StructuredProperty(Product)
 	quantity = ndb.IntegerProperty(indexed=False)
+
 	
 class Cart(ndb.Model):
 	#represents a cart
@@ -67,6 +71,7 @@ class Cart(ndb.Model):
 	item = ndb.StructuredProperty(Item)
 	user = ndb.StructuredProperty(User)
 	totalPrice = ndb.FloatProperty(indexed=False)
+
 	
 class Order(ndb.Model):
 	#represents an order
@@ -76,6 +81,7 @@ class Order(ndb.Model):
 	cart =ndb.StructuredProperty(Cart)
 	totalPrice = ndb.FloatProperty(indexed=False)
 
+	
 def init_products():
 
 
@@ -112,6 +118,7 @@ def init_products():
 								
 			newproduct.put();
 
+			
 def init_suppliers():
 	"""add to db"""
 
@@ -147,6 +154,7 @@ def init_suppliers():
 								
 			newsupplier.put();
 
+			
 def init_items():
 	"""add to db"""
 
@@ -175,7 +183,7 @@ def init_items():
 							
 			newitem.put();
 
-
+			
 class MainPage(webapp2.RequestHandler):
 	"""This is the main handler for our application"""
 
