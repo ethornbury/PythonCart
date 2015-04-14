@@ -1,52 +1,84 @@
 <?xml version="1.0"?>
 <catalog>
-   <product id="p1">
-      <nameProduct>Product1</nameProduct>
-      <manufacturer>m1</manufacturer>
-      <price>4.00</price>
-      <stockTotal>1</stockTotal>
-   </product>
-   <product id="p2">
-      <nameProduct>Product2</nameProduct>
-      <manufacturer>m2</manufacturer>
-      <price>6.00</price>
-      <stockTotal>5</stockTotal>
-   </product>
- <product id="p3">
-      <nameProduct>Product3</nameProduct>
-      <manufacturer>m1</manufacturer>
-      <price>5.00</price>
-      <stockTotal>10</stockTotal>
-   </product>
-   <product id="p4">
-      <nameProduct>Product4</nameProduct>
-      <manufacturer>m2</manufacturer>
-      <price>5.50</price>
-      <stockTotal>2</stockTotal>
-   </product>
-   
-  <product id="p5">
-      <nameProduct>Product5</nameProduct>
-      <manufacturer>m3</manufacturer>
-      <price>20.00</price>
-      <stockTotal>200</stockTotal>
-   </product>
-   <product id="p6">
-      <namenameProduct>Product6</nameProduct>
-      <manufacturer>m3</manufacturer>
-      <price>1.00</price>
-      <stockTotal>100</stockTotal>
-   </product>
-   <product id="p7">
-      <nameProduct>Product7</nameProduct>
-      <manufacturer>m1</manufacturer>
-      <price>10.00</price>
-      <stockTotal>100</stockTotal>
-   </product>
-   <product id="p8">
-      <nameProduct>Product8</nameProduct>
-      <manufacturer>m1</manufacturer>
-      <price>5.00</price>
-      <stockTotal>10</stockTotal>
-   </product> 
+	<suppliers>
+		<supplier id="1">
+		  <nameSupplier>Supplier1</nameSupplier>
+		  <email>supplier-1@et.ie</email>
+		  <phonenumber>0871234567</phonenumber>
+		  <url>1</url>
+	   </supplier>
+		<supplier id="2">
+		  <nameSupplier>Supplier2</nameSupplier>
+		  <email>supplier-2@et.ie</email>
+		  <phonenumber>0861234567</phonenumber>
+		  <url>1</url>
+	   </supplier>
+	   <supplier id="3">
+		  <nameSupplier>Supplier3</nameSupplier>
+		  <email>supplier-3@et.ie</email>
+		  <phonenumber>0831234567</phonenumber>
+		  <url>1</url>
+	   </supplier>
+		 <supplier id="4">
+		  <nameSupplier>Supplier4</nameSupplier>
+		  <email>supplier-4@et.ie</email>
+		  <phonenumber>0851234567</phonenumber>
+		  <url>1</url>
+	   </supplier>
+		 <supplier id="5">
+		  <nameSupplier>Supplier5</nameSupplier>
+		  <email>supplier-5@et.ie</email>
+		  <phonenumber>0841234567</phonenumber>
+		  <url>1</url>
+	   </supplier>
+   </suppliers>
+   <products>
+	   <product id="1" supplier="1">
+		  <nameProduct>Product1</nameProduct>
+		  <price>4.00</price>
+		  <stockTotal>1</stockTotal>
+	   </product>
+	   <product id="2" supplier="2">
+		  <nameProduct>Product2</nameProduct>
+		  <price>6.00</price>
+		  <stockTotal>5</stockTotal>
+	   </product>
+		<product id="3" supplier="3">
+		  <nameProduct>Product3</nameProduct>
+		  <price>5.00</price>
+		  <stockTotal>10</stockTotal>
+	   </product>
+	   <product id="4" supplier="3">
+		  <nameProduct>Product4</nameProduct>
+		  <price>5.50</price>
+		  <stockTotal>2</stockTotal>
+	   </product>   
+	  <product id="5" supplier="2">
+		  <nameProduct>Product5</nameProduct>
+		  <supplier>3</supplier>
+		  <price>20.00</price>
+		  <stockTotal>200</stockTotal>
+	   </product>
+	   <product id="6" supplier="4">
+		  <nameProduct>Product6</nameProduct>
+		  <price>1.00</price>
+		  <stockTotal>100</stockTotal>
+	   </product>
+	   <product id="7" supplier="4">
+		  <nameProduct>Product7</nameProduct>
+		  <price>10.00</price>
+		  <stockTotal>100</stockTotal>
+	   </product>
+	   <product id="8" supplier="1">
+		  <nameProduct>Product8</nameProduct>
+		  <price>5.00</price>
+		  <stockTotal>10</stockTotal>
+	   </product>
+	</products>
+	 <items>
+	   <item id="1" product="1">
+		  <quantity>10</quantity>   
+		  <price>44.95</price>
+	   </item>
+	</items>
 </catalog>

@@ -1,19 +1,8 @@
-<<<<<<< HEAD
 <?xml version="1.0"?>
 <catalog>
-   <item id="i1">
-      <productId>p1</productId>
+   <item id="1">
+      <productId>1</productId>
       <quantity>10</quantity>   
       <price>44.95</price>
    </item>
 </catalog>
-=======
-<?xml version="1.0"?>
-<catalog>
-   <item id="i1">
-      <productId>p1</productId>
-      <quantity>10</quantity>   
-      <price>44.95</price>
-   </item>
-</catalog>
->>>>>>> 0121ad78b56084de7808c7989d65bf6daf127551

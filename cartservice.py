@@ -49,8 +49,8 @@ class Supplier(ndb.Model):
 class Product(ndb.Model):
 	#Represents a product
 	id = ndb.StringProperty(indexed=True)
+	supplier = ndb.StructuredProperty(Supplier)
 	nameProduct = ndb.StringProperty(indexed=False)
-	supplier = ndb.StringProperty(Supplier)
 	price = ndb.FloatProperty(indexed=False)
 	stockTotal = ndb.IntegerProperty(indexed=False)
 	
@@ -58,25 +58,27 @@ class Product(ndb.Model):
 class Item(ndb.Model):
 	#Represents an item
 	id = ndb.StringProperty(indexed=True)
-	product = ndb.StringProperty(Product)
+	product = ndb.StructuredProperty(Product)
 	quantity = ndb.IntegerProperty(indexed=False)
 	
 class Cart(ndb.Model):
 	#represents a cart
 	id = ndb.StringProperty(indexed=True)
-	item = ndb.StringProperty(Item)
-	user = ndb.StringProperty(User)
+	item = ndb.StructuredProperty(Item)
+	user = ndb.StructuredProperty(User)
 	totalPrice = ndb.FloatProperty(indexed=False)
 	
 class Order(ndb.Model):
 	#represents an order
 	id = ndb.StringProperty(indexed=True)
-	item = ndb.StringProperty(Item)
-	user = ndb.StringProperty(User)
-	cart =ndb.StringProperty(Cart)
+	item = ndb.StructuredProperty(Item)
+	user = ndb.StructuredProperty(User)
+	cart =ndb.StructuredProperty(Cart)
 	totalPrice = ndb.FloatProperty(indexed=False)
 
 def init_products():
+
+
 	#add products to db
 	
 	#Check that we haven't already added the book
@@ -97,10 +99,10 @@ def init_products():
 			
 			newproduct.id = product.getAttribute("id");
 			
+			newproduct.supplier = product.getAttribute("supplier");
+			
+			nameProduct = product.getElementsByTagName('nameProduct')[0]
 			newproduct.nameProduct = nameProduct.childNodes[0].data;
-			nameProduct = product.getElementsByTagName('nameProduct')[0]			
-
-			manufacturer = product.getAttribute('manufacturer');
 									
 			price = product.getElementsByTagName('price')[0]	
 			newproduct.price = float(price.childNodes[0].data);
@@ -119,7 +121,7 @@ def init_suppliers():
 
 	if len(suppliers) == 0:
 		# Open suppliers.xml document using minidom parser
-		DOMTree = xml.dom.minidom.parse("resources/suppliers.xml")
+		DOMTree = xml.dom.minidom.parse("resources/products.xml")
 		collection = DOMTree.documentElement
 
 		#Get suppliers 
@@ -154,7 +156,7 @@ def init_items():
 
 	if len(items) == 0:
 		# Open products.xml document using minidom parser
-		DOMTree = xml.dom.minidom.parse("resources/items.xml")
+		DOMTree = xml.dom.minidom.parse("resources/products.xml")
 		collection = DOMTree.documentElement
 
 		#Get products 
@@ -166,7 +168,7 @@ def init_items():
 			
 			newitem.id = item.getAttribute("id");
 			
-			newitem.product = item.getAttribute('product');
+			newitem.product = item.getAttribute("product");
 									
 			quantity = item.getElementsByTagName('quantity')[0]	
 			newitem.quantity = quantity(integer.childNodes[0].data);
@@ -581,7 +583,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 			product = {}
 			product['id'] = p.id
 			product['nameProduct'] = p.nameProduct
-			product['manufacturer'] = p.manufacturer
+			product['supplier'] = p.supplier
 			product['price'] = p.price
 			product['stockTotal'] = p.stockTotal
 			
@@ -622,7 +624,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 				product = Product(parent=data_store_key(PUBSTORE_NAME))
 				product.id = productjson["id"];
 				product.nameProduct = productjson["nameProduct"];
-				product.manufacturer = productjson["manufacturer"];
+				product.supplier = productjson["supplier"];
 				product.price = productjson["price"];
 				product.stockTotal = productjson["stockTotal"];
 			
