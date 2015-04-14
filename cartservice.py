@@ -48,7 +48,6 @@ class Supplier(ndb.Model):
 	phonenumber = ndb.IntegerProperty(indexed=False)
 	url = ndb.StringProperty(indexed=False)
 
-	
 class Product(ndb.Model):
 	#Represents a product
 	id = ndb.StringProperty(indexed=True)
