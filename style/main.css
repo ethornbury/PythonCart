@@ -2,6 +2,7 @@ body{
 font-family: 'Myriad Pro',Helvetica, sans-serif;
 padding-top: 20px;
 }
+
 .formbox{
 
 }
@@ -20,36 +21,54 @@ display: inline-block;
 width: 100px;
 margin: 5px;
 }
+
 .container{
-background-color: #cccfff;
+color: #3d3e4c;
 width: 400px;
-height: auto;
+height: 380px;
 padding: 5px;
 border: 1px solid #ccc;
-margin: 0 auto;
+margin: 10px;
 /* border radius cross browser*/
 -webkit-border-radius: 3px;
 -moz-border-radius: 3px;
 border-radius: 3px;
 }
-/*
+
+h1{
+text-align: center;
+background: #3d3e4c;
+color: #cccfff;
+padding:3px;
+/* border radius cross browser*/
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
 .leftAlign{
+background-color: #cccfff;
 float: left;
 }
 
 .rightAlign{
 float: right;
 }
-*/
+
+.newLine{
+clear: both;
+}
+
 input{
 margin: 5px;
-width: 50%;
+width: 30%;
 border: 1px solid #622025;
 height: 30px;
 /* border radius cross browser*/
 -webkit-border-radius: 3px;
 -moz-border-radius: 3px;
 border-radius: 3px;
+display: inline;
 }
 
 a{
@@ -62,7 +81,4 @@ height: 30px;
 -webkit-border-radius: 3px;
 -moz-border-radius: 3px;
 border-radius: 3px;
-}
-.newLine{
-clear: both;
 }

@@ -5,13 +5,13 @@ function AddProduct(){
 
 	/*Get the first name and last name*/
 	var product	= document.getElementById("product_id").value.trim();
-	var name 	= document.getElementById("name").value.trim();
+	var nameProduct 	= document.getElementById("nameProduct").value.trim();
 	var manufacturer 	= document.getElementById("manufacturer_id").value.trim();
 	var price 	= document.getElementById("price").value.trim();
 	var stockTotal 	= document.getElementById("stockTotal").value.trim();
 
 	/*Check that values have been entered*/
-	if(!productId || !name ||  !manufacturer_id || !price || !stockTotal){
+	if(!productId || !nameProduct ||  !manufacturer_id || !price || !stockTotal){
 		alert("All fields are required");
 	}
 	else if(!parseFloat(price)){
@@ -57,7 +57,7 @@ function AddProduct(){
 		//build a json object
 		var productObject ={};
 		productObject.id = productId;
-		productObject.name = name;
+		productObject.nameProduct = nameProduct;
 		productObject.manufacturer = manufacturerId;
 		productObject.price = price;
 		productObject.stockTotal = stockTotal;
@@ -104,8 +104,8 @@ function listProducts(){
 				for(var i=0;i<response.products.length;i++){
 					
 					result+="<tr><td>"+response.products[i].id
-					+"</td><td>"+response.products[i].name+"</td><td>"
-					+response.products[i].manufacturer+"</td></tr>"
+					+"</td><td>"+response.products[i].nameProduct+"</td><td>"
+					+response.products[i].manufacturer_id+"</td></tr>"
 					+response.products[i].price+"</td></tr>"
 					+response.products[i].stockTotal+"</td></tr>";
 					

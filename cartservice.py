@@ -36,42 +36,44 @@ class User(ndb.Model):
 	lastname = ndb.StringProperty(indexed=False)
 	email = ndb.StringProperty(indexed=False)
 	address = ndb.TextProperty(indexed=False)
-	
-class Product(ndb.Model):
-	#Represents a product
-	id = ndb.StringProperty(indexed=True)
-	name = ndb.StringProperty(indexed=False)
-	supplier = ndb.StucturedProperty(Supplier)
-	price = ndb.FloatProperty(indexed=False)
-	stockTotal = ndb.IntegerProperty(indexed=False)
+
 	
 class Supplier(ndb.Model):
 	#Represents a supplier
 	id = ndb.StringProperty(indexed=True)
-	name = ndb.StringProperty(indexed=False)
+	nameSupplier = ndb.StringProperty(indexed=False)
 	email = ndb.StringProperty(indexed=False)
 	phonenumber = ndb.IntegerProperty(indexed=False)
 	url = ndb.StringProperty(indexed=False)
+
+class Product(ndb.Model):
+	#Represents a product
+	id = ndb.StringProperty(indexed=True)
+	nameProduct = ndb.StringProperty(indexed=False)
+	supplier = ndb.StringProperty(Supplier)
+	price = ndb.FloatProperty(indexed=False)
+	stockTotal = ndb.IntegerProperty(indexed=False)
 	
+
 class Item(ndb.Model):
 	#Represents an item
 	id = ndb.StringProperty(indexed=True)
-	product = ndb.StructuredProperty(Product)
+	product = ndb.StringProperty(Product)
 	quantity = ndb.IntegerProperty(indexed=False)
 	
 class Cart(ndb.Model):
 	#represents a cart
 	id = ndb.StringProperty(indexed=True)
-	item = ndb.StructuredProperty(Item)
-	user = ndb.StructuredProperty(User)
+	item = ndb.StringProperty(Item)
+	user = ndb.StringProperty(User)
 	totalPrice = ndb.FloatProperty(indexed=False)
 	
 class Order(ndb.Model):
 	#represents an order
 	id = ndb.StringProperty(indexed=True)
-	item = ndb.StructuredProperty(Item)
-	user = ndb.StructuredProperty(User)
-	cart =ndb.StructuredProperty(Cart)
+	item = ndb.StringProperty(Item)
+	user = ndb.StringProperty(User)
+	cart =ndb.StringProperty(Cart)
 	totalPrice = ndb.FloatProperty(indexed=False)
 
 def init_products():
@@ -95,17 +97,16 @@ def init_products():
 			
 			newproduct.id = product.getAttribute("id");
 			
-			newproduct.name = name.childNodes[0].data;
-			name = product.getElementsByTagName('name')[0]			
+			newproduct.nameProduct = nameProduct.childNodes[0].data;
+			nameProduct = product.getElementsByTagName('nameProduct')[0]			
 
-			manufacturerId = product.getElementsByTagName('manufacturerId')[0]
-			newproduct.manufacturerId = manufacturerId.childNodes[0].data;
+			manufacturer = product.getAttribute('manufacturer');
 									
 			price = product.getElementsByTagName('price')[0]	
 			newproduct.price = float(price.childNodes[0].data);
 						
 			stockTotal = product.getElementsByTagName('stockTotal')[0]
-			newbook.stockTotal = stockTotal.childNodes[0].data;
+			newbook.stockTotal = integer(stockTotal.childNodes[0].data);
 								
 			newproduct.put();
 
@@ -130,8 +131,8 @@ def init_suppliers():
 			
 			newsupplier.id = supplier.getAttribute("id");
 			
-			name = supplier.getElementsByTagName('name')[0]
-			newsupplier.name = name.childNodes[0].data;
+			nameSupplier = supplier.getElementsByTagName('name')[0]
+			newsupplier.nameSupplier = nameSupplier.childNodes[0].data;
 			
 			email = supplier.getElementsByTagName('email')[0]
 			newsupplier.email = email.childNodes[0].data;
@@ -140,7 +141,7 @@ def init_suppliers():
 			newsupplier.phonenumber = phonenumber.childNodes[0].data;
 						
 			url = supplier.getElementsByTagName('url')[0]
-			newsupplier.url = url.childNodes[0].data);
+			newsupplier.url = url.childNodes[0].data;
 								
 			newsupplier.put();
 
@@ -165,11 +166,10 @@ def init_items():
 			
 			newitem.id = item.getAttribute("id");
 			
-			productId = item.getElementsByTagName('productId')[0]
-			newitem.productId = productId.childNodes[0].data;
+			newitem.product = item.getAttribute('product');
 									
 			quantity = item.getElementsByTagName('quantity')[0]	
-			newitem.quantity = quantity.childNodes[0].data);
+			newitem.quantity = quantity(integer.childNodes[0].data);
 							
 			newitem.put();
 
@@ -317,8 +317,7 @@ class SupplierServiceHandler(webapp2.RequestHandler):
 			#store each supplier in a dictionary
 			supplier = {}
 			supplier['id'] = p.id
-			supplier['firstname'] = p.name
-			supplier['lastname'] = p.email
+			supplier['nameSupplier'] = p.nameSupplier
 			supplier['email'] = p.email
 			supplier['phonenumber'] = p.phonenumber
 			supplier['url'] = p.url
@@ -359,7 +358,7 @@ class SupplierServiceHandler(webapp2.RequestHandler):
 				#Create a new instance of Supplier
 				supplier = Supplier(parent=data_store_key(PUBSTORE_NAME))
 				supplier.id = supplierjson["id"];
-				supplier.name = supplierjson["name"];
+				supplier.nameSupplier = supplierjson["nameSupplier"];
 				supplier.email = supplierjson["email"];
 				supplier.phonenumber = supplierjson["phonenumber"];
 				supplier.url = supplierjson["url"];
@@ -377,7 +376,7 @@ class SupplierServiceHandler(webapp2.RequestHandler):
 			else:
 				#Update the supplier object
 				supplier = query_results[0];
-				supplier.name = supplierjson["name"];
+				supplier.nameSupplier = supplierjson["nameSupplier"];
 
 				#Store the supplier info
 				supplier.put();
@@ -581,7 +580,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 			#store each product in a dictionary
 			product = {}
 			product['id'] = p.id
-			product['name'] = p.name
+			product['nameProduct'] = p.nameProduct
 			product['manufacturer'] = p.manufacturer
 			product['price'] = p.price
 			product['stockTotal'] = p.stockTotal
@@ -622,7 +621,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 				#Create a new instance of Product
 				product = Product(parent=data_store_key(PUBSTORE_NAME))
 				product.id = productjson["id"];
-				product.name = productjson["name"];
+				product.nameProduct = productjson["nameProduct"];
 				product.manufacturer = productjson["manufacturer"];
 				product.price = productjson["price"];
 				product.stockTotal = productjson["stockTotal"];
@@ -640,7 +639,7 @@ class ProductServiceHandler(webapp2.RequestHandler):
 			else:
 				#Update the product object
 				product = query_results[0];
-				product.name = productjson["name"];
+				product.nameProduct = productjson["nameProduct"];
 
 				#Store the product info
 				product.put();

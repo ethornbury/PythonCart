@@ -5,13 +5,13 @@ function AddSupplier(){
 
 	/*Get the first name and last name*/
 	var supplierId	= document.getElementById("supplier_id").value.trim();
-	var name 	= document.getElementById("name").value.trim();
+	var nameSupplier 	= document.getElementById("nameSupplier").value.trim();
 	var email 	= document.getElementById("email").value.trim();
 	var phonenumber 	= document.getElementById("phonenumber").value.trim();
 	var url 	= document.getElementById("url").value.trim();
 
 	/*Check that values have been entered*/
-	if(!supplierId || !name ||  !email || !phonenumber || !url){
+	if(!supplierId || !nameSupplier ||  !email || !phonenumber || !url){
 		alert("All fields are required");
 	}
 	
@@ -52,7 +52,7 @@ function AddSupplier(){
 		//build a json object
 		var supplierObject ={};
 		supplierObject.id = supplierId;
-		supplierObject.name = name;
+		supplierObject.nameSupplier = nameSupplier;
 		supplierObject.email = email;
 		supplierObject.phonenumber = phonenumber;
 		supplierObject.url = url;
@@ -99,7 +99,7 @@ function listSuppliers(){
 				for(var i=0;i<response.suppliers.length;i++){
 					
 					result+="<tr><td>"+response.suppliers[i].id
-					+"</td><td>"+response.suppliers[i].name+"</td><td>"
+					+"</td><td>"+response.suppliers[i].nameSupplier+"</td><td>"
 					+response.suppliers[i].email+"</td></tr>"
 					+response.suppliers[i].phonenumber+"</td></tr>"
 					+response.suppliers[i].url+"</td></tr>";

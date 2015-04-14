@@ -9,7 +9,7 @@
 	</head>
 
 	<body>
-		<div class="container">
+		<div class="container leftAlign">
 		<h1>User</h1>
 			<div class="formbox">
 				<div class="formelement">
@@ -24,17 +24,19 @@
 				<div class="formelement">
 					<label>Last Name:</label><input type="text" name="lastname" id="lastname">
 				</div>
-				<div class="formelement"
-					<input type="button" value="Update User Details" onclick="updateUserDetails();" />
+				<div class="formelement">
+					<input type="button" value="Add/Update" onclick="updateUserDetails();" />
 				</div>
+				<br />
 				<div class="formelement">
 					<a href="{{ logout_url }}">Logout</a>
 				</div>
-				<br />
 			</div>
-		</div>	
+		</div>
 		<br />
-		<div class="container">
+		<div class="newLine"></div>
+		
+		<div class="container leftAlign">
 		<h1>Product</h1>
 			<div class="formbox">
 				<div class="formelement">
@@ -53,18 +55,17 @@
 					<label>Stock total:</label><input type="text" name="price" id="price">
 				</div>
 				<div class="formelement">
-					<input type="button" value="Add/Update" onclick="AddBook();" />
+					<input type="button" value="Add/Update" onclick="AddProduct();" />
+					<input type="button" value="Delete" onclick="DeleteProduct();" />
 				</div>
 				<br />
 			</div>
 		</div>
 		<br />
+		<div id="products" class="container rightAlign"></div>
+		<div class="newLine"></div>
 		
-		<div id="products" class="container"></div>
-
-		<br />
-		
-		<div class="container">
+		<div class="container leftAlign">
 		<h1>Supplier</h1>
 			<div class="formbox">
 				<div class="formelement">
@@ -83,17 +84,17 @@
 					<label>URL:</label><input type="text" name="price" id="price">
 				</div>
 				<div class="formelement">
-					<input type="button" value="Add/Update" onclick="AddBook();" />
+					<input type="button" value="Add/Update" onclick="AddSupplier();" />
+					<input type="button" value="Delete" onclick="deleteSupplier();" />
 				</div>
 				<br />
 			</div>
 		</div>		
 		<br />
-		
-		<div id="suppliers"></div>
-		
-		<br />
-		<div class="container">
+		<div id="suppliers" class="container rightAlign"></div>
+		<div class="newLine"></div>
+
+		<div class="container leftAlign">
 		<h1>Item</h1>
 			<div class="formbox">
 				<div class="formelement">
@@ -109,17 +110,17 @@
 					<label>Price:</label><input type="text" name="price" id="price">
 				</div>
 				<div class="formelement">
-					<input type="button" value="Add/Update" onclick="AddBook();" />
+					<input type="button" value="Add/Update" onclick="AddItem();" />
+					<input type="button" value="Delete" onclick="DeleteItem();" />
 				</div>
 				<br />
 			</div>
 		</div>
 		<br />
-		
-		<div id="items" class="container"></div>
-		
-		<br />		
-		<div class="container">
+		<div id="items" class="container rightAlign"></div>
+		<div class="newLine"></div>
+	
+		<div class="container leftAlign">
 		<h1>Cart</h1>
 			<div class="formbox">
 				<div class="formelement">
@@ -135,17 +136,17 @@
 					<label>Total Price:</label><input type="text" name="price" id="price">
 				</div>
 				<div class="formelement">
-					<input type="button" value="Add/Update" onclick="AddBook();" />
+					<input type="button" value="Add/Update" onclick="AddCart();" />
+					<input type="button" value="Delete" onclick="DeleteCart();" />
 				</div>
 				<br />
 			</div>
 		</div>
 		<br />
-		
-		<div id="carts" class="container"></div>
-		
-		<br />
-		<div class="container">
+		<div id="carts" class="container rightAlign"></div>
+		<div class="newLine"></div>
+
+		<div class="container leftAlign">
 		<h1>Order</h1>
 			<div class="formbox">
 				<div class="formelement">
@@ -164,14 +165,15 @@
 					<label>Total Price:</label><input type="text" name="price" id="price">
 				</div>
 				<div class="formelement">
-					<input type="button" value="Add/Update" onclick="AddBook();" />
+					<input type="button" value="Add/Update" onclick="AddOrder();" />
+					<input type="button" value="Delete" onclick="DeleteOrder();" />
 				</div>
 				<br />
 			</div>
 		</div>
 		<br />
-		
-		<div id="orders" class="container"></div>			
+		<div id="orders" class="container rightAlign"></div>			
+		<div class="newLine"></div>
 		
 		<script src="scripts/user.js"></script>
 		<script src="scripts/supplier.js"></script>
